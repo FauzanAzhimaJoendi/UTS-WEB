@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Manajemen Penjualan</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 20px;
+            padding: 20px;
+        }
+        h2 {
+            color: #333;
+        }
+        form, .section {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+        }
+        input {
+            margin: 5px 0;
+            padding: 8px;
+            width: 100%;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        button {
+            background-color: #389511;
+            color: white;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            width: 100%;
+        }
+        button:hover {
+            background-color: #1a5cb1;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+            display: none;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: left;
+        }
+        th {
+            background-color: #007bff;
+            color: white;
+        }
+    </style>
+    <script>
+        let produkList = [];
+        let pelangganList = [];
+        let transaksiList = [];
+
+        function cariProduk() {
+            event.preventDefault();
+            let keyword = document.getElementById("cari_produk").value.toLowerCase();
+            let hasilBody = document.getElementById("hasil_pencarian");
+            hasilBody.innerHTML = "";
+            
+            let hasil = produkList.filter(produk => produk.nama.toLowerCase().includes(keyword));
+            hasil.forEach((produk, index) => {
+                let row = `<tr><td>${index + 1}</td><td>${produk.nama}</td><td>${produk.harga}</td><td>${produk.stok}</td></tr>`;
+                hasilBody.innerHTML += row;
+            });
+        }
+
+        function tambahProduk(event) {
+            event.preventDefault();
+            let nama = document.getElementById("nama_produk").value;
+            let harga = document.getElementById("harga").value;
+            let stok = document.getElementById("stok").value;
+
+            if (nama && harga && stok) {
+                produkList.push({ nama, harga, stok });
+            }
+        }
+
+        function tambahPelanggan(event) {
+            event.preventDefault();
+            let nama = document.getElementById("nama_pelanggan").value;
+            let kontak = document.getElementById("kontak").value;
+
+            if (nama && kontak) {
+                pelangganList.push({ nama, kontak });
+            }
+        }
+
+        function tambahTransaksi(event) {
+            event.preventDefault();
+            let pelanggan = document.getElementById("pelanggan_transaksi").value;
+            let produk = document.getElementById("produk_transaksi").value;
+            let jumlah = document.getElementById("jumlah_transaksi").value;
+
+            if (pelanggan && produk && jumlah) {
+                transaksiList.push({ pelanggan, produk, jumlah });
+            }
+        }
+
+        function tampilkanLaporan(id) {
+            let table = document.getElementById(id);
+            table.style.display = table.style.display === "none" ? "table" : "none";
+            
+            if (id === "laporan_produk") {
+                let produkBody = document.getElementById("laporan_produk_body");
+                produkBody.innerHTML = "";
+                produkList.forEach((produk, index) => {
+                    let row = `<tr><td>${index + 1}</td><td>${produk.nama}</td><td>${produk.harga}</td><td>${produk.stok}</td></tr>`;
+                    produkBody.innerHTML += row;
+                });
+            } else if (id === "laporan_pelanggan") {
+                let pelangganBody = document.getElementById("laporan_pelanggan_body");
+                pelangganBody.innerHTML = "";
+                pelangganList.forEach((pelanggan, index) => {
+                    let row = `<tr><td>${index + 1}</td><td>${pelanggan.nama}</td><td>${pelanggan.kontak}</td></tr>`;
+                    pelangganBody.innerHTML += row;
+                });
+            } else if (id === "laporan_transaksi") {
+                let transaksiBody = document.getElementById("laporan_transaksi_body");
+                transaksiBody.innerHTML = "";
+                transaksiList.forEach((transaksi, index) => {
+                    let row = `<tr><td>${index + 1}</td><td>${transaksi.pelanggan}</td><td>${transaksi.produk}</td><td>${transaksi.jumlah}</td></tr>`;
+                    transaksiBody.innerHTML += row;
+                });
+            }
+        }
+    </script>
+</head>
+<body>
+    <h2>Cari Produk</h2>
+    <input type="text" id="cari_produk" oninput="cariProduk()" placeholder="Masukkan nama produk...">
+    <table>
+        <tr><th>No</th><th>Nama</th><th>Harga</th><th>Stok</th></tr>
+        <tbody id="hasil_pencarian"></tbody>
+    </table>
+
+    <h2>Tambah Produk</h2>
+    <form onsubmit="tambahProduk(event)">
+        Nama Produk: <input type="text" id="nama_produk" required>
+        Harga: <input type="number" id="harga" required>
+        Stok: <input type="number" id="stok" required>
+        <button type="submit">Tambah</button>
+    </form>
+
+    <h2>Tambah Pelanggan</h2>
+    <form onsubmit="tambahPelanggan(event)">
+        Nama Pelanggan: <input type="text" id="nama_pelanggan" required>
+        Kontak: <input type="text" id="kontak" required>
+        <button type="submit">Tambah</button>
+    </form>
+
+    <h2>Tambah Transaksi</h2>
+    <form onsubmit="tambahTransaksi(event)">
+        Nama Pelanggan: <input type="text" id="pelanggan_transaksi" required>
+        Produk: <input type="text" id="produk_transaksi" required>
+        Jumlah: <input type="number" id="jumlah_transaksi" required>
+        <button type="submit">Tambah</button>
+    </form>
+
+    <h2>Laporan</h2>
+    <button onclick="tampilkanLaporan('laporan_produk')">Tampilkan Laporan Produk</button>
+    <table id="laporan_produk">
+        <tr><th>No</th><th>Nama</th><th>Harga</th><th>Stok</th></tr>
+        <tbody id="laporan_produk_body"></tbody>
+    </table>
+
+    <button onclick="tampilkanLaporan('laporan_pelanggan')">Tampilkan Laporan Pelanggan</button>
+    <table id="laporan_pelanggan">
+        <tr><th>No</th><th>Nama</th><th>Kontak</th></tr>
+        <tbody id="laporan_pelanggan_body"></tbody>
+    </table>
+
+    <button onclick="tampilkanLaporan('laporan_transaksi')">Tampilkan Laporan Transaksi</button>
+    <table id="laporan_transaksi">
+        <tr><th>No</th><th>Pelanggan</th><th>Produk</th><th>Jumlah</th></tr>
+        <tbody id="laporan_transaksi_body"></tbody>
+    </table>
+</body>
+</html>
